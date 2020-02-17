@@ -1,0 +1,96 @@
+Please deliver links to an R Markdown file (in GitHub and rpubs.com) with solutions to the problems below.  You may work in a small group, but please submit separately with names of all group participants in your submission.
+
+#1. Using the 173 majors listed in fivethirtyeight.com’s College Majors dataset [https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/], provide code that identifies the majors that contain either "DATA" or "STATISTICS"
+
+```{r setup, include=FALSE}
+college_majors_orig <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv")
+college_majors <- as.data.frame(college_majors_orig)
+head(college_majors)
+```
+
+```{r find-data-majors}
+library(stringr)
+contains_data <- str_detect(college_majors$Major, fixed("DATA"))
+college_majors[contains_data, ]
+```
+
+__There is one major wih 'data' in the major name.__  
+
+```{r find-stats-majors}
+contains_stats <- str_detect(college_majors$Major, fixed("STATISTICS"))
+college_majors[contains_stats, ]
+```
+
+__There are two majors with 'statistics' in the major name.__  
+
+#2 Write code that transforms the data below:
+
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry"
+
+Into a format like this:
+
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+```{r fruits-original}
+fruits_orig <- '[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry"'
+fruits_orig
+```
+
+
+```{r fruits-format}
+fruits_split <- unlist(str_extract_all(fruits_orig, pattern = "\"([a-z]+.[a-z]+)\""))
+fruits_split
+fruits_clean <- str_remove_all(fruits_split, "\"")
+fruits_clean
+```
+
+
+
+The two exercises below are taken from R for Data Science, 14.3.5.1 in the on-line version:
+
+
+#3 Describe, in words, what these expressions will match:
+
+(.)\1\1
+
+__This will match any one character, followed by two repetitions, like "aaa" or "555". The correct expression would be "(.)\\1\\1".__
+
+"(.)(.)\\2\\1"
+
+__This will search for two characters repeated, except reverse. Like "abba" or "1331".__
+
+(..)\1
+
+__This will search for two characters, repeated once, like "coco" or "1212". The correct expression would be "(..)\\1".__
+
+"(.).\\1.\\1"
+
+__This will search for a five character term, three of which are the same, like "rarer" or "51525".__
+
+"(.)(.)(.).*\\3\\2\\1"
+
+__This will construct a set of characters that begin and end with the same three characters, except the second instance is reversed, like "racecar" or "12378724321".__  
+
+#4 Construct regular expressions to match words that:
+
+Start and end with the same character.
+
+__"(.).*\\1"__  
+
+Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+__".*([A-Za-z][A-Za-z]).*\\1.*"__    
+
+Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+__".*([A-Za-z]).*\\1.*\\1.*"__  
